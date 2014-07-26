@@ -49,8 +49,6 @@ namespace Resource_Enumerator
 
         private static bool EnumRes(IntPtr hModule, IntPtr lpszType, IntPtr lpszName, IntPtr lParam)
         {
-            Debug.WriteLine("Type: " + GET_RESOURCE_NAME(lpszType));
-            Debug.WriteLine("Name: " + GET_RESOURCE_NAME(lpszName));
             resourceNames.Add(GET_RESOURCE_NAME(lpszName));
             return true;
         }

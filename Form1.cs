@@ -93,7 +93,7 @@ namespace Resource_Enumerator
             {
                 foreach (Resource resource in (Resource[])Enum.GetValues(typeof(Resource)))
                 {
-                    resourceList.Add(EnumerateType.getResourceList(dataFilePointer, Resource.CURSOR));
+                    resourceList.Add(EnumerateType.getResourceList(dataFilePointer, resource));
                 }
 
                 for (int i = 0; i < checkedListBox1.Items.Count; i++)
