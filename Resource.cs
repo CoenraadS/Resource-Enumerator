@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Resource_Enumerator
 {
-    public enum ResourceTypes
+    public enum Resource
     {
         CURSOR = 1,
         BITMAP = 2,
