@@ -24,10 +24,8 @@ namespace Resource_Enumerator
         public static List<string> getResourceList(IntPtr dataFilePointer, Resource type)
         {
             resourceNames = new List<string>();
-            if (!EnumResourceNamesWithID(dataFilePointer, (uint)type, new EnumResNameDelegate(EnumRes), IntPtr.Zero))
-            {
-                Debug.WriteLine("Last Error: {0}", Marshal.GetLastWin32Error());
-            };
+            EnumResourceNamesWithID(dataFilePointer, (uint)type, new EnumResNameDelegate(EnumRes), IntPtr.Zero);
+            
             return resourceNames;
         }
 

@@ -87,7 +87,7 @@ namespace Resource_Enumerator
             }
             dataFilePointer = LoadLibraryEx(fileName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE);
 
-            listBox1.Items.Clear();
+            listView1.Items.Clear();
 
             if (File.Exists(fileName))
             {
@@ -102,10 +102,13 @@ namespace Resource_Enumerator
                     {
                         if (resourceList[i].Count > 0)
                         {
-                            listBox1.Items.Add((Resource)Enum.GetValues(typeof(Resource)).GetValue(i));
+                            ListViewItem entryListItem = listView1.Items.Add(((Resource)Enum.GetValues(typeof(Resource)).GetValue(i)).ToString());
+                            entryListItem.UseItemStyleForSubItems = false;
+                            entryListItem.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
+
                             foreach (String item in resourceList[i])
                             {
-                                listBox1.Items.Add(item);
+                                listView1.Items.Add(item);
                             }
                         }
                     }
