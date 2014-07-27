@@ -45,6 +45,8 @@ namespace Resource_Enumerator
             ToolStripMenuItem recentSubItem = new ToolStripMenuItem("Recent");
             ToolStripMenuItem runItem = new ToolStripMenuItem("Run", null, runToolStripMenuItem_Click);
 
+            fileItem.DropDownItems.Add(openSubItem);
+
             if (!String.IsNullOrEmpty(Properties.Settings.Default.Recent1) ||
                 !String.IsNullOrEmpty(Properties.Settings.Default.Recent2) ||
                 !String.IsNullOrEmpty(Properties.Settings.Default.Recent3))
@@ -69,8 +71,6 @@ namespace Resource_Enumerator
 
                 fileItem.DropDownItems.Add(recentSubItem);
             }
-
-            fileItem.DropDownItems.Add(openSubItem);
 
             menuStrip1.Items.Add(fileItem);
             menuStrip1.Items.Add(runItem);
@@ -167,9 +167,16 @@ namespace Resource_Enumerator
 
                 this.Text = openFileDialog1.SafeFileName;
 
-                Properties.Settings.Default.Recent3 = Properties.Settings.Default.Recent2;
-                Properties.Settings.Default.Recent2 = Properties.Settings.Default.Recent1;
-                Properties.Settings.Default.Recent1 = fileName;
+                if (Properties.Settings.Default.Recent1 != fileName &&
+                    Properties.Settings.Default.Recent2 != fileName &&
+                    Properties.Settings.Default.Recent3 != fileName)
+                {
+                    Properties.Settings.Default.Recent3 = Properties.Settings.Default.Recent2;
+                    Properties.Settings.Default.Recent2 = Properties.Settings.Default.Recent1;
+                    Properties.Settings.Default.Recent1 = fileName;
+                    Properties.Settings.Default.Save();
+                }
+
             }
         }
 
