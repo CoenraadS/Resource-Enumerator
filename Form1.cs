@@ -24,11 +24,14 @@ namespace Resource_Enumerator
         string fileName;
         private const uint LOAD_LIBRARY_AS_DATAFILE = 0x00000002;
         IntPtr dataFilePointer;
+        Resource[] resourceArray;
+        DataTable table;
+        DataRow row;
 
         public Form1()
         {
             dataFilePointer = IntPtr.Zero;
-            resourceList = new List<List<string>>();
+            resourceArray = (Resource[])Enum.GetValues(typeof(Resource));
             initializeMenu();
             InitializeComponent();
             checkedListBox1.DataSource = Enum.GetNames(typeof(Resource));
@@ -67,7 +70,7 @@ namespace Resource_Enumerator
                 fileItem.DropDownItems.Add(recentSubItem);
             }
 
-            fileItem.DropDownItems.Add(openSubItem);           
+            fileItem.DropDownItems.Add(openSubItem);
 
             menuStrip1.Items.Add(fileItem);
             menuStrip1.Items.Add(runItem);
@@ -77,41 +80,75 @@ namespace Resource_Enumerator
 
         private void enumerateResources()
         {
+            resourceList = new List<List<string>>();
+
             if (dataFilePointer != IntPtr.Zero)
             {
                 try
                 {
                     FreeLibrary(dataFilePointer);
                 }
-                catch {}
+                catch { }
             }
             dataFilePointer = LoadLibraryEx(fileName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE);
 
-            listView1.Items.Clear();
-
             if (File.Exists(fileName))
             {
-                foreach (Resource resource in (Resource[])Enum.GetValues(typeof(Resource)))
+                int checkboxCounter = 0;
+                foreach (Resource resource in resourceArray)
                 {
-                    resourceList.Add(EnumerateType.getResourceList(dataFilePointer, resource));
+                    if (checkedListBox1.GetItemChecked(checkboxCounter))
+                    {
+                        List<string> tempList = EnumerateType.getResourceList(dataFilePointer, resource);
+                        resourceList.Add(tempList);
+
+                    }
+                    checkboxCounter++;
                 }
 
-                for (int i = 0; i < checkedListBox1.Items.Count; i++)
-                {
-                    if (checkedListBox1.GetItemChecked(i))
-                    {
-                        if (resourceList[i].Count > 0)
-                        {
-                            ListViewItem entryListItem = listView1.Items.Add(((Resource)Enum.GetValues(typeof(Resource)).GetValue(i)).ToString());
-                            entryListItem.UseItemStyleForSubItems = false;
-                            entryListItem.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
+                table = new DataTable();
+                dataGridView1.DataSource = null;
 
-                            foreach (String item in resourceList[i])
-                            {
-                                listView1.Items.Add(item);
-                            }
+                if (resourceList.Count > 0)
+                {
+                    int length = 0;
+                    /* The Datatable accepts input as rows. 
+                     So we must arrange all columns to have same amount of rows (MAX). */
+                    foreach (List<string> item in resourceList)
+                    {
+                        if (item.Count > length)
+                        {
+                            length = item.Count;
                         }
                     }
+
+                    //Add columns
+
+                    checkboxCounter = 0;
+                    foreach (Resource resource in resourceArray)
+                    {
+                        if (checkedListBox1.GetItemChecked(checkboxCounter))
+                        {
+                            table.Columns.Add(resource.ToString());
+                        }
+                        checkboxCounter++;
+                    }
+
+                    //Populate via rows
+                    for (int i = 0; i < length; i++) //For each row.
+                    {
+                        row = table.NewRow();
+
+                        for (int x = 0; x < resourceList.Count; x++) //For each column index.
+                        {
+                            if (i < resourceList[x].Count)
+                            {
+                                row[x] = resourceList[x][i];
+                            }
+                        }
+                        table.Rows.Add(row);
+                    }
+                    dataGridView1.DataSource = table;
                 }
             }
             else

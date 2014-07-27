@@ -25,7 +25,7 @@ namespace Resource_Enumerator
         {
             resourceNames = new List<string>();
             EnumResourceNamesWithID(dataFilePointer, (uint)type, new EnumResNameDelegate(EnumRes), IntPtr.Zero);
-            
+
             return resourceNames;
         }
 

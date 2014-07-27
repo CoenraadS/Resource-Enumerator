@@ -31,13 +31,12 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.checkBoxAll = new System.Windows.Forms.CheckBox();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.ResourceColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.RestoreDirectory = true;
             // 
             // checkBoxAll
@@ -59,32 +58,29 @@
             this.checkedListBox1.Size = new System.Drawing.Size(148, 319);
             this.checkedListBox1.TabIndex = 5;
             // 
-            // listView1
+            // dataGridView1
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ResourceColumn});
-            this.listView1.Location = new System.Drawing.Point(163, 42);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(165, 319);
-            this.listView1.TabIndex = 6;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            // 
-            // ResourceColumn
-            // 
-            this.ResourceColumn.Text = "Resources";
-            this.ResourceColumn.Width = 168;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(163, 42);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(762, 319);
+            this.dataGridView1.TabIndex = 6;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(340, 369);
-            this.Controls.Add(this.listView1);
+            this.ClientSize = new System.Drawing.Size(937, 369);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.checkBoxAll);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Resource Enumerator";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -95,8 +91,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.CheckBox checkBoxAll;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ColumnHeader ResourceColumn;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 
