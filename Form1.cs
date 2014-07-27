@@ -82,14 +82,6 @@ namespace Resource_Enumerator
         {
             resourceList = new List<List<string>>();
 
-            if (dataFilePointer != IntPtr.Zero)
-            {
-                try
-                {
-                    FreeLibrary(dataFilePointer);
-                }
-                catch { }
-            }
             dataFilePointer = LoadLibraryEx(fileName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE);
 
             if (File.Exists(fileName))
@@ -155,6 +147,13 @@ namespace Resource_Enumerator
             {
                 MessageBox.Show("File does not exist");
             }
+
+            try
+            {
+                FreeLibrary(dataFilePointer);
+            }
+            catch { }
+
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
