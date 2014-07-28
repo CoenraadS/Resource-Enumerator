@@ -27,6 +27,11 @@ namespace Resource_Enumerator
         Resource[] resourceArray;
         DataTable table;
         DataRow row;
+        ToolStripMenuItem fileItem;
+        ToolStripMenuItem recentSubItem;
+        ToolStripMenuItem recentSubItem1;
+        ToolStripMenuItem recentSubItem2;
+        ToolStripMenuItem recentSubItem3;
 
         public Form1()
         {
@@ -40,49 +45,66 @@ namespace Resource_Enumerator
         private void initializeMenu()
         {
             menuStrip1 = new MenuStrip();
-            ToolStripMenuItem fileItem = new ToolStripMenuItem("File");
+            fileItem = new ToolStripMenuItem("File");
             ToolStripMenuItem openSubItem = new ToolStripMenuItem("Open", null, openToolStripMenuItem_Click);
-            ToolStripMenuItem recentSubItem = new ToolStripMenuItem("Recent");
+            recentSubItem = new ToolStripMenuItem("Recent");
             ToolStripMenuItem runItem = new ToolStripMenuItem("Run", null, runToolStripMenuItem_Click);
+            ToolStripMenuItem toolItem = new ToolStripMenuItem("Tools");
+            ToolStripMenuItem stringToolItem = new ToolStripMenuItem("String Viewer", null, stringToolToolStripMenuItem_Click);
+            ToolStripMenuItem imageToolItem = new ToolStripMenuItem("Image Viewer", null, imageToolToolStripMenuItem_Click);
 
             fileItem.DropDownItems.Add(openSubItem);
 
+            #region Recent files
             if (!String.IsNullOrEmpty(Properties.Settings.Default.Recent1) ||
                 !String.IsNullOrEmpty(Properties.Settings.Default.Recent2) ||
                 !String.IsNullOrEmpty(Properties.Settings.Default.Recent3))
             {
                 if (!String.IsNullOrEmpty(Properties.Settings.Default.Recent1))
                 {
-                    ToolStripMenuItem recentSubItem1 = new ToolStripMenuItem(Properties.Settings.Default.Recent1, null, recentSubItem1_Click);
+                    recentSubItem1 = new ToolStripMenuItem(Properties.Settings.Default.Recent1, null, recentSubItem1_Click);
                     recentSubItem.DropDownItems.Add(recentSubItem1);
                 }
 
                 if (!String.IsNullOrEmpty(Properties.Settings.Default.Recent2))
                 {
-                    ToolStripMenuItem recentSubItem2 = new ToolStripMenuItem(Properties.Settings.Default.Recent2, null, recentSubItem2_Click);
+                    recentSubItem2 = new ToolStripMenuItem(Properties.Settings.Default.Recent2, null, recentSubItem2_Click);
                     recentSubItem.DropDownItems.Add(recentSubItem2);
                 }
 
                 if (!String.IsNullOrEmpty(Properties.Settings.Default.Recent3))
                 {
-                    ToolStripMenuItem recentSubItem3 = new ToolStripMenuItem(Properties.Settings.Default.Recent3, null, recentSubItem2_Click);
+                    recentSubItem3 = new ToolStripMenuItem(Properties.Settings.Default.Recent3, null, recentSubItem2_Click);
                     recentSubItem.DropDownItems.Add(recentSubItem3);
                 }
-
                 fileItem.DropDownItems.Add(recentSubItem);
             }
+            #endregion
 
+            toolItem.DropDownItems.Add(imageToolItem);
+            toolItem.DropDownItems.Add(stringToolItem);
             menuStrip1.Items.Add(fileItem);
             menuStrip1.Items.Add(runItem);
+            menuStrip1.Items.Add(toolItem);
+
 
             this.Controls.Add(menuStrip1);
+        }
+
+        private void loadFile()
+        {
+            if (dataFilePointer != IntPtr.Zero)
+            {
+                FreeLibrary(dataFilePointer);
+            }
+
+            dataFilePointer = LoadLibraryEx(fileName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE);
+            this.Text = fileName;
         }
 
         private void enumerateResources()
         {
             resourceList = new List<List<string>>();
-
-            dataFilePointer = LoadLibraryEx(fileName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE);
 
             if (File.Exists(fileName))
             {
@@ -147,13 +169,6 @@ namespace Resource_Enumerator
             {
                 MessageBox.Show("File does not exist");
             }
-
-            try
-            {
-                FreeLibrary(dataFilePointer);
-            }
-            catch { }
-
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -163,9 +178,9 @@ namespace Resource_Enumerator
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 fileName = openFileDialog1.FileName;
+                loadFile();
 
-                this.Text = openFileDialog1.SafeFileName;
-
+                //If item is new, add it to recent list and move other items down.
                 if (Properties.Settings.Default.Recent1 != fileName &&
                     Properties.Settings.Default.Recent2 != fileName &&
                     Properties.Settings.Default.Recent3 != fileName)
@@ -176,26 +191,62 @@ namespace Resource_Enumerator
                     Properties.Settings.Default.Save();
                 }
 
+                //Add recent menu option.
+                for (int i = 0; i < recentSubItem.DropDownItems.Count;)
+                {
+                    if (recentSubItem.DropDownItems[i] != null)
+                    {
+                        recentSubItem.DropDownItems.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Recent1) && recentSubItem1 != null)
+                {
+                    recentSubItem1 = new ToolStripMenuItem(Properties.Settings.Default.Recent1, null, recentSubItem1_Click);
+                    recentSubItem.DropDownItems.Add(recentSubItem1);
+                }
+
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Recent2) && recentSubItem2 != null)
+                {
+                    recentSubItem2 = new ToolStripMenuItem(Properties.Settings.Default.Recent2, null, recentSubItem1_Click);
+                    recentSubItem.DropDownItems.Add(recentSubItem2);
+                }
+
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Recent3) && recentSubItem3 != null)
+                {
+                    recentSubItem3 = new ToolStripMenuItem(Properties.Settings.Default.Recent3, null, recentSubItem1_Click);
+                    recentSubItem.DropDownItems.Add(recentSubItem3);
+                }
+
+                if (recentSubItem.DropDownItems.Count > 0 && recentSubItem1 != null || recentSubItem2 != null || recentSubItem3 != null)
+                {
+                    fileItem.DropDownItems.Add(recentSubItem);
+                }
+                
             }
         }
 
         private void recentSubItem1_Click(object sender, EventArgs e)
         {
             fileName = Properties.Settings.Default.Recent1;
-            this.Text = fileName;
+            loadFile();
         }
 
         private void recentSubItem2_Click(object sender, EventArgs e)
         {
             fileName = Properties.Settings.Default.Recent2;
-            this.Text = fileName;
+            loadFile();
 
         }
 
         private void recentSubItem3_Click(object sender, EventArgs e)
         {
             fileName = Properties.Settings.Default.Recent3;
-            this.Text = fileName;
+            loadFile();
         }
 
         private void checkBoxAll_CheckedChanged(object sender, EventArgs e)
@@ -220,5 +271,20 @@ namespace Resource_Enumerator
         {
             enumerateResources();
         }
+
+        private void stringToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataFilePointer != IntPtr.Zero)
+            {
+                StringViewer stringViewer = new StringViewer(dataFilePointer);
+                stringViewer.Show();
+            }
+        }
+
+        private void imageToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
