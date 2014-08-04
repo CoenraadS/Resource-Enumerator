@@ -51,7 +51,7 @@ namespace Resource_Enumerator
             ToolStripMenuItem runItem = new ToolStripMenuItem("Run", null, runToolStripMenuItem_Click);
             ToolStripMenuItem toolItem = new ToolStripMenuItem("Tools");
             ToolStripMenuItem stringToolItem = new ToolStripMenuItem("String Viewer", null, stringToolToolStripMenuItem_Click);
-            ToolStripMenuItem imageToolItem = new ToolStripMenuItem("Image Viewer", null, imageToolToolStripMenuItem_Click);
+            //ToolStripMenuItem imageToolItem = new ToolStripMenuItem("Image Viewer", null, imageToolToolStripMenuItem_Click);
 
             fileItem.DropDownItems.Add(openSubItem);
 
@@ -81,7 +81,7 @@ namespace Resource_Enumerator
             }
             #endregion
 
-            toolItem.DropDownItems.Add(imageToolItem);
+            //toolItem.DropDownItems.Add(imageToolItem);
             toolItem.DropDownItems.Add(stringToolItem);
             menuStrip1.Items.Add(fileItem);
             menuStrip1.Items.Add(runItem);
